@@ -1,1 +1,10 @@
-# comment
+CREATE TABLE IF NOT EXISTS MUTUAL_FUND
+    (
+        SYMBOL CHAR(3) PRIMARY KEY,
+        NAME VARCHAR(10) NOT NULL,
+        DESCRIPTION VARCHAR(30),
+        CATEGORY VARCHAR(10),
+        T_NUM_SHARES INTEGER,
+        C_DATE DATE
+        
+    );
