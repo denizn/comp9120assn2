@@ -26,7 +26,3 @@ CREATE TABLE IF NOT EXISTS COMPANY
             FOREIGN KEY (LOCATION_ID)
             REFERENCES LOCATION(LOCATION_ID)
     );
-
-      CONSTRAINT fk_supplier
-    FOREIGN KEY (supplier_id)
-    REFERENCES supplier(supplier_id)
