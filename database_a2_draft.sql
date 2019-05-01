@@ -1,40 +1,41 @@
+CREATE TABLE IF NOT EXISTS COMPANY
+    (
+        COMPANY_ID INTEGER PRIMARY KEY NOT NULL,
+        NAME VARCHAR(30) NOT NULL,
+        CEO_lname VARCHAR(20),
+        CEO_fname VARCHAR(20)
+    );
 
 CREATE TABLE IF NOT EXISTS MUTUAL_FUND 
     (
         SYMBOL CHAR(3) PRIMARY KEY,
-        NAME VARCHAR(10) NOT NULL,
+        M_NAME VARCHAR(10) NOT NULL,
         DESCRIPTION VARCHAR(30),
         CATEGORY VARCHAR(10),
         T_NUM_SHARES INTEGER,
         C_DATE DATE NOT NULL,
-        COMPANY_ID INTEGER REFERENCES COMPANY ON DELETE CASCADE ##relationship between mutual_fund and company
+        COMPANY_ID INTEGER REFERENCES COMPANY ON DELETE CASCADE 
     );
 
-#####closing_price is a weak entity type
+
 CREATE TABLE IF NOT EXISTS closing_price
 (
     PRICE INTEGER,
     P_DATE DATE NOT NULL,
-    SYMBOL CHAR(3) REFERENCES MUTUAL_FUND ##should we add "on delete cascade"
+    SYMBOL CHAR(3) REFERENCES MUTUAL_FUND,
     PRIMARY KEY (P_DATE,SYMBOL)
 );
 
-CREATE TABLE IF NOT EXISTS LOCATION
+CREATE TABLE IF NOT EXISTS "LOCATION"
     (
-        LOCATION_ID INTEGER PRIMARY KEY,
-        STATE VARCHAR(3) DEFAULT "NSW", ##additional details 
+    STATE VARCHAR(3) DEFAULT 'NSW',  
         CITY VARCHAR(10),
-        POSTCODE VARCHAR(5)
+        POSTCODE VARCHAR(5),
+        COMPANY_ID INTEGER REFERENCES COMPANY ON DELETE CASCADE,
+        PRIMARY KEY (COMPANY_ID)
     );
 
-CREATE TABLE IF NOT EXISTS COMPANY
-    (
-        COMPANY_ID INTEGER PRIMARY KEY,
-        NAME VARCHAR(30) NOT NULL,
-        CEO_lname VARCHAR(20),
-        CEO_fname VARCHAR(20),
-        LOCATION_ID INTEGER REFERENCES LOCATION
-    );
+
 
 CREATE TABLE IF NOT EXISTS USERS
     (
@@ -51,51 +52,51 @@ CREATE TABLE IF NOT EXISTS CUSTOMER
         BALANCES FLOAT
     );
 
-##relationship schema between mutual_fund and customer --> "prefers"
+
 CREATE TABLE IF NOT EXISTS R_PREFER
     (
-        SYMBOL CHAR(3), ##mutual_fund entity's primary key
-        COMPANY_ID INTEGER, ##mutual_fund entity has exactly one company
-        PERCENTAGE INTEGER,  ##relationship's attribute 
-        CUSTOMER_ID VARCHAR(30), ##customer entity's primary key
+        SYMBOL CHAR(3), 
+        COMPANY_ID INTEGER, 
+        PERCENTAGE INTEGER,   
+        CUSTOMER_ID VARCHAR(30), 
         PRIMARY KEY (SYMBOL, COMPANY_ID, CUSTOMER_ID) 
     );
 
 CREATE TABLE IF NOT EXISTS R_OWNS
     (
-        SYMBOL CHAR(3), ##mutual_fund entity's primary key
-        COMPANY_ID INTEGER, ##mutual_fund entity has exactly one company
-        SHARES INTEGER,  ##relationship's attribute 
-        CUSTOMER_ID VARCHAR(30), ##customer entity's primary key
+        SYMBOL CHAR(3), 
+        COMPANY_ID INTEGER, 
+        SHARES INTEGER,   
+        CUSTOMER_ID VARCHAR(30), 
         PRIMARY KEY (SYMBOL, COMPANY_ID, CUSTOMER_ID) 
     );
 
 CREATE TABLE IF NOT EXISTS R_PROFOLIO_ACTION
     (
-        SYMBOL CHAR(3), ##mutual_fund entity's primary key
-        COMPANY_ID INTEGER, ##mutual_fund entity has exactly one company
-        SHARES INTEGER,  ##relationship's attribute
+        SYMBOL CHAR(3), 
+        COMPANY_ID INTEGER, 
+        SHARES INTEGER,  
         t_date DATE NOT NULL,
         PRICE INTEGER,
         AMOUNT INTEGER,
         NUM_SHARES INTEGER,
         ACTION VARCHAR (10),
-        CUSTOMER_ID VARCHAR(30), ##customer entity's primary key
+        CUSTOMER_ID VARCHAR(30), 
         TRANS_ID INTEGER,
         PRIMARY KEY (SYMBOL, COMPANY_ID, CUSTOMER_ID, TRANS_ID),
-        CHECK (AMOUNT = NUM_SHARES), ##adtional details 
-        CHECK (ACTION = 'sell' or ACTION = 'buy') ##adtional details 
+        CHECK (AMOUNT = NUM_SHARES),  
+        CHECK (ACTION = 'sell' or ACTION = 'buy') 
     );
 
 
 CREATE TABLE IF NOT EXISTS ADMINISTRATOR
     (
-        ADMINISTRATOR_ID VARCHAR(30) REFERENCES USERS(LOGIN) PRIMARY KEY,
+        ADMINISTRATOR_ID VARCHAR(30) REFERENCES USERS(LOGIN) PRIMARY KEY
     );
 
 CREATE TABLE TRANSACTIONS
     (
-        TRANS_ID INTEGER PRIMARY KEY,
+        TRANS_ID INTEGER PRIMARY KEY
     );
 
 CREATE TABLE INV_TRANS
@@ -116,4 +117,3 @@ CREATE TABLE R_DEPOSIT_TRANS
         AMOUNT INTEGER,
         PRIMARY KEY (TRANS_ID, CUSTOMER_ID)
     );
-
