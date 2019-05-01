@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS R_PROFOLIO_ACTION
         TRANS_ID INTEGER,
         PRIMARY KEY (SYMBOL, COMPANY_ID, CUSTOMER_ID, TRANS_ID),
         CHECK (AMOUNT = NUM_SHARES),  
-        CHECK (ACTION = 'sell' or ACTION = 'buy') 
+        CHECK (ACTIONS = 'sell' or ACTIONS = 'buy') 
     );
 
 
